@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cross-Platform AR Viewer</title>
+    <style>
+        body { margin: 0; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+
+<div id="viewer-container" style="width: 100vw; height: 100vh;"></div>
+
+<script>
+    function isApplePlatform() {
+        return /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent) && !window.MSStream;
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        if (isApplePlatform()) {
+            window.location.href = 'https://RicoArchi.github.io/SuperSunday/DRIP-MIRROR.usdz';
+        } else {
+            // Initialize a WebGL renderer
+            const container = document.getElementById('viewer-container');
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            container.appendChild(renderer.domElement);
+
+            // Load the GLTF model
+            const loader = new THREE.GLTFLoader();
+            loader.load('https://RicoArchi.github.io/SuperSunday/DRIP-MIRROR.gltf', function (gltf) {
+                scene.add(gltf.scene);
+                camera.position.z = 2;
+                animate();
+            });
+
+            function animate() {
+                requestAnimationFrame(animate);
+                renderer.render(scene, camera);
+            }
+        }
+    });
+</script>
+
+</body>
+</html>
